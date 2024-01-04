@@ -1,0 +1,17 @@
+// Fonts
+@import url('https://fonts.bunny.net/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import 'bootstrap/scss/bootstrap';
+.card {
+    background-color: #f0f0f0;
+    color: white;
+    font-family: 'Montserrat';
+}
+
+body{
+    background-color: #8127ff;
+}

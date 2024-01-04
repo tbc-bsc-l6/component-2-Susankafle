@@ -27,3 +27,15 @@ Route::post('/login', [LoginController::class, 'login']);
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+// routes/web.php
+
+use App\Http\Controllers\Auth\RegisterController;
+
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [RegisterController::class, 'register']);
+
+
+Route::get('/calendar', function () {
+    return view('calendar');
+});

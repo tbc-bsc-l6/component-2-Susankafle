@@ -8,11 +8,11 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Trade Zette') }}</title>
-
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
-
+    <link rel="stylesheet" href="{{ asset('css/fullcalendar.min.css') }}">
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
@@ -76,5 +76,6 @@
             @yield('content')
         </main>
     </div>
+    <script src="{{ asset('js/fullcalendar.min.js') }}"></script>
 </body>
 </html>

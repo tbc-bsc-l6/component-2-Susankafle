@@ -6,7 +6,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calendar</title>
-
     <!-- Moment.js (required for FullCalendar) -->
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.js"></script>
 

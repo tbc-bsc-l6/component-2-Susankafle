@@ -1,11 +1,8 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
-
-Route::get('/', function () {
-    return view('welcome');
-});
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Auth\RegisterController;
 
 // Route to display the login form
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -13,26 +10,25 @@ Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 // Route to handle login form submission
 Route::post('/login', [LoginController::class, 'login']);
 
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-
-use App\Http\Controllers\Auth\RegisterController;
-
+// Registration routes
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
 
-
+// Routes for authenticated users
 Route::middleware(['auth'])->group(function () {
-    // existing routes for authenticated users
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/calendar', function () {
         return view('calendar');
     });
     // Add more authenticated routes as needed
 
-    // Any other routes defined here will require authentication
+    // Navbar route
+    Route::get('/navbar', [HomeController::class, 'navbar']);
 });
 
+// Default welcome route
+Route::get('/', function () {
+    return view('welcome');
+});
 
-Route::get('/navbar', 'HomeController@dashboard')->middleware('auth');
+Route::post('/events', [EventController::class, 'store']);

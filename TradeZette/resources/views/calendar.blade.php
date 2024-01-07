@@ -56,6 +56,30 @@
                 currentTimezone: 'America/Los_Angeles' // an option!
             });
         });
+        // Assume you have a function to handle date clicks in your FullCalendar setup
+
+    function handleDateClick(date) {
+    // Get necessary information for the event (e.g., title, start, end)
+    var eventData = {
+        title: 'New Event',
+        start: date.format(),
+        end: date.format(),
+    };
+
+    // Send an AJAX request to the server to create the event
+    $.ajax({
+        type: 'POST',
+        url: '/events',
+        data: eventData,
+        success: function(response) {
+            // Update the calendar view with the new event
+            $('#calendar').fullCalendar('renderEvent', eventData, true);
+        },
+        error: function(error) {
+            console.error('Error creating event:', error);
+        }
+    });
+}
 
         // Function to change FullCalendar view
         function changeView(view) {

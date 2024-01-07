@@ -20,7 +20,6 @@
 </head>
 <body>
     <div id="app">
-    @include('navbar')
         @auth
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item dropdown">

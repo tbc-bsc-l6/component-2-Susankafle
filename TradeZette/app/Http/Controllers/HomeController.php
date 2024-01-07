@@ -25,4 +25,12 @@ class HomeController extends Controller
     {
         return view('home');
     }
+
+    // HomeController.php
+
+    public function navbar()
+    {
+        return view('navbar');
+    }
+
 }

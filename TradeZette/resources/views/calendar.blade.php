@@ -18,9 +18,28 @@
     <!-- FullCalendar scripts -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/fullcalendar.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/gcal.min.js"></script>
+    <style>
+        /* Style for custom buttons */
+        .custom-buttons {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 999;
+        }
+
+        .custom-buttons button {
+            margin-right: 5px;
+        }
+    </style>
 </head>
 <body>
+<button onclick="changeView('month')">Month</button>
+    <button onclick="changeView('agendaWeek')">Week</button>
+    <button onclick="changeView('agendaDay')">Day</button>
     <div id="calendar"></div>
+
+    <!-- Add custom buttons outside the calendar -->
+    
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -30,13 +49,18 @@
                 header: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
+                defaultView: 'month',
                 googleCalendarId: 'your-google-calendar-id@group.calendar.google.com',
                 className: 'gcal-event', // an option!
                 currentTimezone: 'America/Los_Angeles' // an option!
             });
         });
+
+        // Function to change FullCalendar view
+        function changeView(view) {
+            $('#calendar').fullCalendar('changeView', view);
+        }
     </script>
 </body>
 </html>

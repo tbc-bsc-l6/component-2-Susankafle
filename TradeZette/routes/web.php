@@ -2,17 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-
 Route::get('/', function () {
     return view('welcome');
 });
@@ -28,7 +17,6 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-// routes/web.php
 
 use App\Http\Controllers\Auth\RegisterController;
 
@@ -36,6 +24,15 @@ Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->na
 Route::post('/register', [RegisterController::class, 'register']);
 
 
-Route::get('/calendar', function () {
-    return view('calendar');
+Route::middleware(['auth'])->group(function () {
+    // existing routes for authenticated users
+    Route::get('/calendar', function () {
+        return view('calendar');
+    });
+    // Add more authenticated routes as needed
+
+    // Any other routes defined here will require authentication
 });
+
+
+Route::get('/navbar', 'HomeController@dashboard')->middleware('auth');

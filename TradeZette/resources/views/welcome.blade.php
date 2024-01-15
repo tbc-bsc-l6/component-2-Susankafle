@@ -6,5 +6,6 @@
         <title>Trade Zette</title>
     </head>
     <body>
+    @include('navbar')
     </body>
 </html>

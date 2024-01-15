@@ -3,8 +3,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\FullCalendarController;
-
+use App\Http\Controllers\EventController;
 
 // Route to display the login form
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -33,7 +32,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('/events', [EventController::class, 'store']);
+Route::post('/event', [EventController::class, 'store']);
 
 // routes/web.php
 

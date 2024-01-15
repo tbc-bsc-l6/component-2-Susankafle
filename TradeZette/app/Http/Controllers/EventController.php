@@ -28,7 +28,7 @@ class EventController extends Controller
             'comment' => $request->input('comment'),
         ]);
 
-        auth()->user()->events()->save($event);
+        auth()->user()->event()->save($event);
 
         return response()->json(['message' => 'Event created successfully', 'event' => $event]);
     }

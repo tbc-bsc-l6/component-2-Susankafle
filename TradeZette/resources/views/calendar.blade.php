@@ -63,11 +63,12 @@
             };
             $.ajax({
                 type: 'POST',
-                url: '/events', // Change this to the correct URL for your store method
+                url: '/event', // Change this to the correct URL for your store method
                 data: eventData,
                 success: function(response) {
-                    $('#calendar').fullCalendar('renderEvent', eventData, true);
-                },
+                console.log('Server response:', response);
+                $('#calendar').fullCalendar('renderEvent', eventData, true);
+    },
                 error: function(error) {
                     console.error('Error creating event:', error);
                 }

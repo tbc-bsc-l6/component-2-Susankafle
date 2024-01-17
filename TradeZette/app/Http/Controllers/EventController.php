@@ -6,6 +6,40 @@ use App\Models\Event;
 
 class EventController extends Controller
 {
+    public function getEvents(Request $request)
+{
+    $request->validate([
+        'start' => 'required|date',
+        'end' => 'required|date',
+    ]);
+
+    $start = $request->input('start');
+    $end = $request->input('end');
+
+    $events = Event::whereBetween('start_date', [$start, $end])
+        ->orWhereBetween('end_date', [$start, $end])
+        ->get();
+
+    $formattedEvents = $events->map(function ($event) {
+        return [
+            'id' => $event->id,
+            'title' => $event->title,
+            'entry_price' => $event->entry_price,
+            'exit_price' => $event->exit_price,
+            'profit' => $event->profit,
+            'start' => $event->start_date,
+            'end' => $event->end_date,
+            'comment' => $event->comment,
+        ];
+    });
+
+    return response()->json($formattedEvents);
+}
+
+    public function create()
+    {
+        return view('create');
+    }
     public function store(Request $request)
     {
         $request->validate([

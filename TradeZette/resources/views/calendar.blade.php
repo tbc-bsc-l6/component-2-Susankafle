@@ -41,13 +41,21 @@
                     left: 'prev,next today',
                     center: 'title',
                 },
-                defaultView: 'month',
-                googleCalendarId: 'your-google-calendar-id@group.calendar.google.com',
+                defaultView: 'month',                
+                googleCalendarId: 'your-google-calendar-id@group.calendar.google.com',               
                 className: 'gcal-event', // an option!
                 currentTimezone: 'America/Los_Angeles', // an option!
-                dayClick: function(date, jsEvent, view) {
-                    handleDateClick(date);
+                events: {
+                    url: '/events', // Adjust the URL based on your Laravel routes
+                    method: 'GET',
+                    failure: function() {
+                        alert('There was an error while fetching events!');
+                    }
                 },
+                dayClick: function(date, jsEvent, view) {                
+                    handleDateClick(date);
+                    //window.location.href = '/event/create';
+            },           
             });
         });
         function handleDateClick(date) {
@@ -68,7 +76,7 @@
                 success: function(response) {
                 console.log('Server response:', response);
                 $('#calendar').fullCalendar('renderEvent', eventData, true);
-    },
+                },
                 error: function(error) {
                     console.error('Error creating event:', error);
                 }

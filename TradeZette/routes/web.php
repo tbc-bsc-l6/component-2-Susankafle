@@ -37,3 +37,7 @@ Route::post('/event', [EventController::class, 'store']);
 // routes/web.php
 
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
+//Route::get('/event/create', 'EventController@create')->name('event.create');
+//Route::post('/event', 'EventController@store')->name('event.store');
+Route::get('/events', 'EventController@getEvents');
+Route::post('/event', [EventController::class, 'store']);

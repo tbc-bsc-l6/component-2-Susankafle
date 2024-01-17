@@ -14,7 +14,8 @@ class EventPolicy
     }
 
     public function delete(User $user, Event $event)
-    {
+    {   
+        \Log::info("User {$user->id} attempting to delete Event {$event->id}");
         // Check if the authenticated user can delete the event
         return $user->id === $event->user_id;
     }

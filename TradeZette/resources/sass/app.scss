@@ -8,10 +8,13 @@
 @import 'bootstrap/scss/bootstrap';
 .card {
     background-color: #f0f0f0;
-    color: white;
+    color: black;
     font-family: 'Montserrat';
 }
 
 body{
-    background-color: #8127ff;
+        background-image: url('https://img.freepik.com/free-photo/collage-finance-banner-concept_23-2150608846.jpg?w=1800&t=st=1705493161~exp=1705493761~hmac=8818d025d6a59e4e7b4e2bae1c5e511ad731ad80bdcd1335ba1c7412febb34ca');
+        background-size: cover; 
+        background-position: center center;
+        background-repeat: no-repeat;
 }

@@ -112,36 +112,38 @@
                 saveEventChanges(selectedEventId);
             });
             $('#deleteEventButton').on('click', function () {
+            if (selectedEventId) {
                 deleteEvent(selectedEventId);
-            });
-            function deleteEvent(eventId) {
-                // Send an AJAX request to delete the event
-                $.ajax({
-                    type: 'DELETE',
-                    url: '/events/' + eventId, // Adjust the URL based on your Laravel routes
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                    },
-                    success: function (response) {
-                        console.log('Event deleted successfully:', response);
-                        // Close the modal and update the FullCalendar
-                        editForm.modal('hide');
-                        $('#calendar').fullCalendar('refetchEvents');
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error deleting event:', xhr.responseText);
-
-                        // Handle specific cases
-                        if (xhr.status === 403) {
-                            // Forbidden error, display a message to the user
-                            alert('You do not have permission to delete this event.');
-                        } else if (xhr.status === 500) {
-                            // Server error, display a generic error message
-                            alert('Error deleting event. Please try again.');
-                        }
-                    },
-                });
+            } else {
+                alert('No event selected for deletion.');
             }
+        });
+
+        function deleteEvent(eventId) {
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+            $.ajax({
+                type: 'DELETE',
+                url: '/events/' + eventId,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                success: function (response) {
+                    console.log('Event deleted successfully:', response);
+                    $('#editEventModal').modal('hide');
+                    $('#calendar').fullCalendar('refetchEvents');
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error deleting event:', xhr.responseText);
+
+                    if (xhr.status === 403) {
+                        alert('You do not have permission to delete this event.');
+                    } else if (xhr.status === 500) {
+                        alert('Error deleting event. Please try again.');
+                    }
+                },
+            });
+        }
             function openEditForm(event) {
                 // Set the selected event ID
                 selectedEventId = event.id;

@@ -1,14 +1,13 @@
 <?php
-use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\EventController;
+use Illuminate\Support\Facades\Route;
 
-// Route to display the login form
+// Routes for authentication
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-
-// Route to handle login form submission
 Route::post('/login', [LoginController::class, 'login']);
 
 // Registration routes
@@ -18,28 +17,24 @@ Route::post('/register', [RegisterController::class, 'register']);
 // Routes for authenticated users
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
-    Route::get('/calendar', function () {
-        return view('calendar');
-    });
+    Route::get('/calendar', fn() => view('calendar'))->name('calendar.index');
+    Route::get('/navbar', [HomeController::class, 'navbar']);
+
     // Add more authenticated routes as needed
 
-    // Navbar route
-    Route::get('/navbar', [HomeController::class, 'navbar']);
+    // Logout route
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
 
 // Default welcome route
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', fn() => view('welcome'));
 
+// Event routes
 Route::post('/event', [EventController::class, 'store']);
+Route::get('/events', [EventController::class, 'getEvents']);
+Route::put('/events/{event}', [EventController::class, 'update']);
+Route::delete('/events/{event}', [EventController::class, 'destroy']);
 
-// routes/web.php
 
-Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
-//Route::get('/event/create', 'EventController@create')->name('event.create');
-//Route::post('/event', 'EventController@store')->name('event.store');
-Route::get('/events', 'EventController@getEvents');
-Route::post('/event', [EventController::class, 'store']);
-Route::put('/events/{event}', 'EventController@update');
-//Route::resource('events', 'EventController');
+// Uncomment the line below if you want to include additional routes for events
+// Route::resource('events', 'EventController');

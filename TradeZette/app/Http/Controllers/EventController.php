@@ -50,6 +50,7 @@ class EventController extends Controller
     public function destroy(Event $event)
     {
         $this->authorize('delete', $event);
+        
 
         $event->delete();
 

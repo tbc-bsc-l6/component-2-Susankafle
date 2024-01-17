@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Updated Popper.js version -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
     <title>Calendar</title>
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -10,15 +12,13 @@
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.js"></script>
     <!-- jQuery -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-    <!-- Bootstrap CSS (adjust the link based on your Bootstrap version) -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
     <!-- FullCalendar styles -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/fullcalendar.min.css" rel="stylesheet">
     <!-- FullCalendar scripts -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/fullcalendar.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/gcal.min.js"></script>
-    <!-- Bootstrap JS (adjust the link based on your Bootstrap version) -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
     <style>
         /* Style for custom buttons */
         .custom-buttons {
@@ -38,30 +38,41 @@
     <button onclick="changeView('agendaDay')">Day</button>
     <div id="calendar"></div>
 
-    <!-- Bootstrap modal for editing events -->
-    <div class="modal fade" id="editEventModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <!-- Edit Event Modal -->
+    <div class="modal fade" id="editEventModal" tabindex="-1" role="dialog" aria-labelledby="editEventModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Event</h5>
+                    <h5 class="modal-title">Edit Event</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!-- Your form fields go here -->
-                    <form id="editEventForm">
-                        <!-- Add your input fields here -->
-                        <div class="form-group">
-                            <label for="editTitle">Title</label>
-                            <input type="text" class="form-control" id="editTitle" required>
-                        </div>
-                        <!-- Add other fields accordingly -->
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" id="saveEventChanges">Save changes</button>
+                    <!-- Your form fields for editing event details -->
+                    <label for="editTitle">Title:</label>
+                    <input type="text" id="editTitle" name="editTitle">
+
+                    <label for="editEntryPrice">Entry Price:</label>
+                    <input type="number" id="editEntryPrice" name="editEntryPrice">
+
+                    <label for="editExitPrice">Exit Price:</label>
+                    <input type="number" id="editExitPrice" name="editExitPrice">
+
+                    <label for="editProfit">Profit:</label>
+                    <input type="number" id="editProfit" name="editProfit">
+
+                    <label for="editStartDate">Start Date:</label>
+                    <input type="date" id="editStartDate" name="editStartDate">
+
+                    <label for="editEndDate">End Date:</label>
+                    <input type="date" id="editEndDate" name="editEndDate">
+
+                    <label for="editComment">Comment:</label>
+                    <textarea id="editComment" name="editComment"></textarea>
+                    <button type="button" class="btn btn-danger" id="deleteEventButton">Delete Event</button>
+                    <!-- Save changes button -->
+                    <button type="button" id="saveEventChanges">Save changes</button>
                 </div>
             </div>
         </div>
@@ -70,6 +81,8 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
+            var selectedEventId; // Variable to store the selected event ID
+
             $(calendarEl).fullCalendar({
                 header: {
                     left: 'prev,next today',
@@ -91,62 +104,137 @@
                 },
                 dayClick: function(date, jsEvent, view) {                
                     handleDateClick(date);
-                    //window.location.href = '/event/create';
-                },           
+                },                
             });
+
+            // Attach click event listener to the "Save changes" button inside the modal
+            $('#saveEventChanges').on('click', function() {
+                saveEventChanges(selectedEventId);
+            });
+            $('#deleteEventButton').on('click', function () {
+                deleteEvent(selectedEventId);
+            });
+            function deleteEvent(eventId) {
+                // Send an AJAX request to delete the event
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/events/' + eventId, // Adjust the URL based on your Laravel routes
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                    },
+                    success: function (response) {
+                        console.log('Event deleted successfully:', response);
+                        // Close the modal and update the FullCalendar
+                        editForm.modal('hide');
+                        $('#calendar').fullCalendar('refetchEvents');
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error deleting event:', xhr.responseText);
+
+                        // Handle specific cases
+                        if (xhr.status === 403) {
+                            // Forbidden error, display a message to the user
+                            alert('You do not have permission to delete this event.');
+                        } else if (xhr.status === 500) {
+                            // Server error, display a generic error message
+                            alert('Error deleting event. Please try again.');
+                        }
+                    },
+                });
+            }
+            function openEditForm(event) {
+                // Set the selected event ID
+                selectedEventId = event.id;
+
+                // Assuming you have a form with an ID 'editEventForm'
+                var editForm = $('#editEventModal');
+
+                // Populate the form fields with event details
+                editForm.find('#editTitle').val(event.title);
+                editForm.find('#editEntryPrice').val(event.entry_price);
+                editForm.find('#editExitPrice').val(event.exit_price);
+                editForm.find('#editProfit').val(event.profit);
+                editForm.find('#editStartDate').val(event.start_date);
+                editForm.find('#editEndDate').val(event.end_date);
+                editForm.find('#editComment').val(event.comment);
+
+                // Show the modal using Bootstrap's modal method
+                editForm.modal('show');
+            }
+            function saveEventChanges(eventId) {
+    // Assuming you have a form with an ID 'editEventForm'
+    var editForm = $('#editEventModal');
+
+    // Get the data from the form
+    var editedEventData = {
+        _token: '{{ csrf_token() }}',
+        title: editForm.find('#editTitle').val(),
+        entry_price: editForm.find('#editEntryPrice').val(),
+        exit_price: editForm.find('#editExitPrice').val(),
+        profit: editForm.find('#editProfit').val(),
+        start_date: editForm.find('#editStartDate').val(),
+        end_date: editForm.find('#editEndDate').val(),
+        comment: editForm.find('#editComment').val(),
+        // ... Get other fields accordingly
+    };
+
+    // Send an AJAX request to update the event
+    $.ajax({
+        type: 'PUT', // Use PUT method for updating
+        url: '/events/' + eventId, // Adjust the URL based on your Laravel routes
+        data: editedEventData,
+        success: function (response) {
+            console.log('Event updated successfully:', response);
+            // Close the modal and update the FullCalendar
+            editForm.modal('hide');
+            $('#calendar').fullCalendar('refetchEvents');
+        },
+        error: function (xhr, status, error) {
+            console.error('Error updating event:', xhr.responseText);
+
+            // Handle specific cases
+            if (xhr.status === 422) {
+                // Validation error, display errors to the user
+                var errors = JSON.parse(xhr.responseText);
+                // Display errors as needed
+            } else if (xhr.status === 500) {
+                // Server error, display a generic error message
+                alert('Error updating event. Please try again.');
+            }
+        },
+    });
+}
+
+            function handleDateClick(date) {
+                var eventData = {
+                    _token: '{{ csrf_token() }}',
+                    title: 'New Event',
+                    entry_price: 0,
+                    exit_price: 0,
+                    profit: 0,
+                    start_date: date.format(),
+                    end_date: date.format(),
+                    comment: '',
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/event',
+                    data: eventData,
+                    success: function(response) {
+                        console.log('Server response:', response);
+                        $('#calendar').fullCalendar('renderEvent', eventData, true);
+                    },
+                    error: function(error) {
+                        console.error('Error creating event:', error);
+                    }
+                });
+            }
+
+            function changeView(view) {
+                $('#calendar').fullCalendar('changeView', view);
+            }
         });
-
-        function openEditForm(event) {
-            // Assuming you have a form with an ID 'editEventForm'
-            var editForm = $('#editEventModal');
-
-            // Populate the form fields with event details
-            editForm.find('#editTitle').val(event.title);
-            // ... Populate other fields accordingly
-
-            // Show the modal
-            editForm.modal('show');
-
-            // Handle form submission to update the event
-            editForm.off('submit').on('submit', function (e) {
-                e.preventDefault();
-
-                // Your existing AJAX request to update the event
-                // ...
-
-                // Close the modal after updating the event
-                editForm.modal('hide');
-            });
-        }
-
-        function handleDateClick(date) {
-            var eventData = {
-                _token: '{{ csrf_token() }}', // Add this
-                title: 'New Event',
-                entry_price: 0,
-                exit_price: 0,
-                profit: 0,
-                start_date: date.format(),
-                end_date: date.format(),
-                comment: '',
-            };
-            $.ajax({
-                type: 'POST',
-                url: '/event', // Change this to the correct URL for your store method
-                data: eventData,
-                success: function(response) {
-                    console.log('Server response:', response);
-                    $('#calendar').fullCalendar('renderEvent', eventData, true);
-                },
-                error: function(error) {
-                    console.error('Error creating event:', error);
-                }
-            });
-        }
-
-        function changeView(view) {
-            $('#calendar').fullCalendar('changeView', view);
-        }
     </script>
 </body>
 </html>

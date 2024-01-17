@@ -60,10 +60,23 @@ class EventController extends Controller
     {
         $this->authorize('update', $event);
 
-        $event->update($this->validateEventData($request));
+        // Validate the request data
+        $validatedData = $this->validateEventData($request);
+
+        // Update the event with the validated data
+        try {
+            $event->update($validatedData);
+        } catch (\Exception $e) {
+            // Log the error
+            \Log::error('Error updating event: ' . $e->getMessage());
+
+            // Return a response with an error message
+            return response()->json(['error' => 'Error updating event. Please try again.'], 500);
+        }
 
         return response()->json(['message' => 'Event updated successfully', 'event' => $this->formatEvent($event)]);
     }
+
 
     private function validateEventData(Request $request)
     {

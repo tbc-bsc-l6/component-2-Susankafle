@@ -41,3 +41,4 @@ Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
 //Route::post('/event', 'EventController@store')->name('event.store');
 Route::get('/events', 'EventController@getEvents');
 Route::post('/event', [EventController::class, 'store']);
+Route::put('/events/{event}', 'EventController@update');

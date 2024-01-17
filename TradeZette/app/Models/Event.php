@@ -14,7 +14,6 @@ class Event extends Model
         'entry_price',
         'exit_price',
         'start_date',
-        'end_date',
         'comment',
     ];
     public function user()

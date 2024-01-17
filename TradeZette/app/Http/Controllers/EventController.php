@@ -19,17 +19,14 @@ class EventController extends Controller
 {
     $request->validate([
         'start' => 'required|date',
-        'end' => 'required|date',
     ]);
 
     $start = $request->input('start');
-    $end = $request->input('end');
 
     // Fetch events only for the authenticated user
     $userEvents = Auth::user()->event()
-        ->where(function ($query) use ($start, $end) {
-            $query->whereBetween('start_date', [$start, $end])
-                ->orWhereBetween('end_date', [$start, $end]);
+        ->where(function ($query) use ($start) {
+            $query->where('start_date', '>=', $start);
         })
         ->get();
 
@@ -37,7 +34,6 @@ class EventController extends Controller
 
     return response()->json($formattedEvents);
 }
-
 
     public function store(Request $request)
     {
@@ -86,7 +82,6 @@ class EventController extends Controller
             'entry_price' => 'required|numeric',
             'exit_price' => 'required|numeric',
             'start_date' => 'required|date',
-            'end_date' => 'required|date',
             'comment' => 'nullable|string',
         ]);
     }
@@ -99,7 +94,6 @@ class EventController extends Controller
             'entry_price' => $event->entry_price,
             'exit_price' => $event->exit_price,
             'start' => $event->start_date,
-            'end' => $event->end_date,
             'comment' => $event->comment,
         ];
     }

@@ -30,7 +30,6 @@ class EventSeeder extends Seeder
                     'entry_price' => $faker->randomFloat(2, 0, 100),
                     'exit_price' => $faker->randomFloat(2, 0, 100),
                     'start_date' => $faker->dateTimeBetween('-2 month', '+2 month'),
-                    'end_date' => $faker->dateTimeBetween('-2 month', '+2 months'),
                     'comment' => $faker->paragraph,
                 ]);
             }

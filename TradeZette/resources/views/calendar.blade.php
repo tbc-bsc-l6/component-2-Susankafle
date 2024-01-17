@@ -66,9 +66,6 @@
                     <label for="editStartDate">Start Date:</label>
                     <input type="date" id="editStartDate" name="editStartDate">
 
-                    <label for="editEndDate">End Date:</label>
-                    <input type="date" id="editEndDate" name="editEndDate">
-
                     <label for="editComment">Comment:</label>
                     <textarea id="editComment" name="editComment"></textarea>
                     <button type="button" class="btn btn-danger" id="deleteEventButton">Delete Event</button>
@@ -100,9 +97,6 @@
 
                     <label for="createStartDate">Start Date:</label>
                     <input type="date" id="createStartDate" name="createStartDate">
-
-                    <label for="createEndDate">End Date:</label>
-                    <input type="date" id="createEndDate" name="createEndDate">
 
                     <label for="createComment">Comment:</label>
                     <textarea id="createComment" name="createComment"></textarea>
@@ -173,7 +167,6 @@
                 entry_price: createForm.find('#createEntryPrice').val(),
                 exit_price: createForm.find('#createExitPrice').val(),
                 start_date: createForm.find('#createStartDate').val(),
-                end_date: createForm.find('#createEndDate').val(),
                 comment: createForm.find('#createComment').val(),
                 // ... Get other fields accordingly
             };
@@ -215,7 +208,6 @@
             createForm.find('#createEntryPrice').val(0);
             createForm.find('#createExitPrice').val(0);
             createForm.find('#createStartDate').val(date.format());
-            createForm.find('#createEndDate').val(date.format());
             createForm.find('#createComment').val('');
 
             // Update modal title to indicate creating a new event
@@ -261,7 +253,6 @@
                 editForm.find('#editEntryPrice').val(event.entry_price);
                 editForm.find('#editExitPrice').val(event.exit_price);
                 editForm.find('#editStartDate').val(event.start_date);
-                editForm.find('#editEndDate').val(event.end_date);
                 editForm.find('#editComment').val(event.comment);
 
                 // Show the modal using Bootstrap's modal method
@@ -278,7 +269,6 @@
                     entry_price: editForm.find('#editEntryPrice').val(),
                     exit_price: editForm.find('#editExitPrice').val(),
                     start_date: editForm.find('#editStartDate').val(),
-                    end_date: editForm.find('#editEndDate').val(),
                     comment: editForm.find('#editComment').val(),
                 };
 

@@ -87,6 +87,7 @@
         <main class="py-4">
             @yield('content')
         </main>
+        @include('footer')
     </div>
     <script src="{{ asset('js/fullcalendar.min.js') }}"></script>
 </body>

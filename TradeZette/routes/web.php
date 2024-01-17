@@ -30,10 +30,12 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/', fn() => view('welcome'));
 
 // Event routes
-Route::post('/event', [EventController::class, 'store']);
+//Route::post('/event', [EventController::class, 'store']);
 Route::get('/events', [EventController::class, 'getEvents']);
 Route::put('/events/{event}', [EventController::class, 'update']);
 Route::delete('/events/{event}', [EventController::class, 'destroy']);
+Route::post('/events', 'EventController@store');
+
 
 
 // Uncomment the line below if you want to include additional routes for events

@@ -16,28 +16,28 @@ class EventController extends Controller
     }
 
     public function getEvents(Request $request)
-    {
-        $request->validate([
-            'start' => 'required|date',
-            'end' => 'required|date',
-        ]);
+{
+    $request->validate([
+        'start' => 'required|date',
+        'end' => 'required|date',
+    ]);
 
-        $start = $request->input('start');
-        $end = $request->input('end');
+    $start = $request->input('start');
+    $end = $request->input('end');
 
-        $events = Event::whereBetween('start_date', [$start, $end])
-            ->orWhereBetween('end_date', [$start, $end])
-            ->get();
+    // Fetch events only for the authenticated user
+    $userEvents = Auth::user()->event()
+        ->where(function ($query) use ($start, $end) {
+            $query->whereBetween('start_date', [$start, $end])
+                ->orWhereBetween('end_date', [$start, $end]);
+        })
+        ->get();
 
-        $formattedEvents = $events->map(fn ($event) => $this->formatEvent($event));
+    $formattedEvents = $userEvents->map(fn ($event) => $this->formatEvent($event));
 
-        return response()->json($formattedEvents);
-    }
+    return response()->json($formattedEvents);
+}
 
-    public function create()
-    {
-        return view('create');
-    }
 
     public function store(Request $request)
     {
@@ -85,7 +85,6 @@ class EventController extends Controller
             'title' => 'required',
             'entry_price' => 'required|numeric',
             'exit_price' => 'required|numeric',
-            'profit' => 'required|numeric',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
             'comment' => 'nullable|string',
@@ -99,7 +98,6 @@ class EventController extends Controller
             'title' => $event->title,
             'entry_price' => $event->entry_price,
             'exit_price' => $event->exit_price,
-            'profit' => $event->profit,
             'start' => $event->start_date,
             'end' => $event->end_date,
             'comment' => $event->comment,

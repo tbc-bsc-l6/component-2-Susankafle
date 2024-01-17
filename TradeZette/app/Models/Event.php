@@ -13,7 +13,6 @@ class Event extends Model
         'title',
         'entry_price',
         'exit_price',
-        'profit',
         'start_date',
         'end_date',
         'comment',

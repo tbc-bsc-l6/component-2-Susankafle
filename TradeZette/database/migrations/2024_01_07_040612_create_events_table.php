@@ -19,7 +19,6 @@ public function up()
         $table->string('title');
         $table->decimal('entry_price', 10, 2)->nullable();
         $table->decimal('exit_price', 10, 2)->nullable();
-        $table->decimal('profit', 10, 2)->nullable();
         $table->dateTime('start_date');
         $table->dateTime('end_date');
         $table->text('comment')->nullable();
